@@ -1,0 +1,249 @@
+/* ============================================================
+   WorkJourney AI — Tema SaaS moderno (Linear / Notion / Stripe)
+   ============================================================ */
+
+:root {
+  --wj-primary: #6D5EF5;
+  --wj-primary-light: #EFECFF;
+  --wj-primary-dark: #5544E0;
+  --wj-bg: #F7F7FB;
+  --wj-gray-light: #F1F1F5;
+  --wj-gray: #8A8A9E;
+  --wj-gray-dark: #4B4B5A;
+  --wj-border: #E7E7EF;
+  --wj-text: #1A1A2E;
+  --wj-success: #1FAA6B;
+  --wj-success-light: #E5F8EF;
+  --wj-warning: #F5A623;
+  --wj-warning-light: #FFF4E0;
+  --wj-danger: #F2545B;
+  --wj-danger-light: #FDEAEA;
+  --wj-radius: 16px;
+  --wj-radius-sm: 10px;
+  --wj-shadow: 0 1px 2px rgba(20, 20, 43, 0.04), 0 8px 24px rgba(20, 20, 43, 0.06);
+  --wj-shadow-hover: 0 4px 12px rgba(20, 20, 43, 0.08), 0 16px 32px rgba(20, 20, 43, 0.10);
+}
+
+html, body, [class*="css"] {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Fondo general */
+.stApp {
+  background: var(--wj-bg);
+}
+
+/* Oculta el chrome por defecto de Streamlit para look de producto SaaS */
+#MainMenu, header[data-testid="stHeader"] { background: transparent; }
+footer { visibility: hidden; }
+
+section.main > div.block-container {
+  padding-top: 1.2rem;
+  padding-bottom: 3rem;
+  max-width: 1400px;
+}
+
+/* ------------------------------------------------------------
+   Sidebar
+   ------------------------------------------------------------ */
+section[data-testid="stSidebar"] {
+  background: #FFFFFF;
+  border-right: 1px solid var(--wj-border);
+}
+section[data-testid="stSidebar"] > div {
+  padding-top: 1rem;
+}
+
+/* ------------------------------------------------------------
+   Cards genéricas
+   ------------------------------------------------------------ */
+.wj-card {
+  background: #FFFFFF;
+  border: 1px solid var(--wj-border);
+  border-radius: var(--wj-radius);
+  padding: 20px 22px;
+  box-shadow: var(--wj-shadow);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  margin-bottom: 16px;
+}
+.wj-card:hover {
+  box-shadow: var(--wj-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.wj-card-flat {
+  background: #FFFFFF;
+  border: 1px solid var(--wj-border);
+  border-radius: var(--wj-radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+
+/* KPI cards */
+.wj-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wj-kpi-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--wj-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.wj-kpi-value {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--wj-text);
+  line-height: 1.1;
+}
+.wj-kpi-delta {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.wj-kpi-delta.up { color: var(--wj-success); }
+.wj-kpi-delta.down { color: var(--wj-danger); }
+.wj-kpi-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  background: var(--wj-primary-light);
+  margin-bottom: 4px;
+}
+
+/* ------------------------------------------------------------
+   Badges
+   ------------------------------------------------------------ */
+.wj-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  gap: 4px;
+}
+.wj-badge.primary { background: var(--wj-primary-light); color: var(--wj-primary-dark); }
+.wj-badge.success { background: var(--wj-success-light); color: var(--wj-success); }
+.wj-badge.warning { background: var(--wj-warning-light); color: #B4740D; }
+.wj-badge.danger  { background: var(--wj-danger-light); color: var(--wj-danger); }
+.wj-badge.info    { background: #EAF2FE; color: #2563EB; }
+.wj-badge.gray    { background: var(--wj-gray-light); color: var(--wj-gray-dark); }
+
+/* ------------------------------------------------------------
+   Timeline (Journey)
+   ------------------------------------------------------------ */
+.wj-timeline-item {
+  position: relative;
+  padding-left: 28px;
+  padding-bottom: 22px;
+  border-left: 2px solid var(--wj-border);
+  margin-left: 10px;
+}
+.wj-timeline-item:last-child { border-left: 2px solid transparent; }
+.wj-timeline-dot {
+  position: absolute;
+  left: -9px; top: 2px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--wj-primary);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px var(--wj-border);
+}
+
+/* ------------------------------------------------------------
+   Progress bars
+   ------------------------------------------------------------ */
+.wj-progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--wj-gray-light);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.wj-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* ------------------------------------------------------------
+   Botones
+   ------------------------------------------------------------ */
+.stButton > button, .stDownloadButton > button {
+  border-radius: 10px !important;
+  border: 1px solid var(--wj-border) !important;
+  font-weight: 600 !important;
+  transition: all 0.15s ease !important;
+}
+.stButton > button[kind="primary"] {
+  background: var(--wj-primary) !important;
+  border-color: var(--wj-primary) !important;
+}
+.stButton > button[kind="primary"]:hover {
+  background: var(--wj-primary-dark) !important;
+  transform: translateY(-1px);
+}
+
+/* Inputs redondeados */
+.stTextInput input, .stNumberInput input, .stTextArea textarea,
+.stDateInput input, .stTimeInput input, div[data-baseweb="select"] > div {
+  border-radius: 10px !important;
+}
+
+/* ------------------------------------------------------------
+   Quick Add flotante
+   ------------------------------------------------------------ */
+.wj-quick-add-anchor {
+  position: fixed;
+  bottom: 28px;
+  right: 34px;
+  z-index: 999;
+}
+
+/* ------------------------------------------------------------
+   Encabezados de sección
+   ------------------------------------------------------------ */
+.wj-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--wj-text);
+  margin-bottom: 2px;
+}
+.wj-page-subtitle {
+  color: var(--wj-gray);
+  font-size: 0.92rem;
+  margin-bottom: 20px;
+}
+
+/* Kanban */
+.wj-kanban-col {
+  background: var(--wj-gray-light);
+  border-radius: var(--wj-radius);
+  padding: 12px;
+  min-height: 200px;
+}
+.wj-kanban-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--wj-gray-dark);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Notification dot */
+.wj-notif-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--wj-danger);
+  display: inline-block;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .wj-kpi-value { font-size: 1.5rem; }
+  section.main > div.block-container { padding-left: 0.6rem; padding-right: 0.6rem; }
+}
