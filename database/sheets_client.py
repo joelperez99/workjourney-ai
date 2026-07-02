@@ -72,29 +72,53 @@ def get_spreadsheet() -> gspread.Spreadsheet:
 
 
 def ensure_all_worksheets() -> None:
-    """Crea las hojas faltantes y valida encabezados según SCHEMAS."""
-    spreadsheet = get_spreadsheet()
-    existing = {ws.title: ws for ws in spreadsheet.worksheets()}
+    """Crea las hojas faltantes y valida encabezados según SCHEMAS.
 
-    for sheet_name, headers in SCHEMAS.items():
-        if sheet_name not in existing:
+    Usa values_batch_get para leer los encabezados de todas las hojas
+    existentes en una sola llamada a la API (en vez de una por hoja), ya
+    que la cuota de la API de Google Sheets es fácil de agotar si se hace
+    una petición por hoja en cada arranque de la app.
+    """
+    spreadsheet = get_spreadsheet()
+    try:
+        existing = {ws.title: ws for ws in spreadsheet.worksheets()}
+
+        missing = [name for name in SCHEMAS if name not in existing]
+        for sheet_name in missing:
+            headers = SCHEMAS[sheet_name]
             logger.info("Creando hoja '%s'", sheet_name)
             ws = spreadsheet.add_worksheet(
                 title=sheet_name, rows=1000, cols=max(len(headers), 10)
             )
             ws.append_row(headers, value_input_option="USER_ENTERED")
-        else:
-            ws = existing[sheet_name]
-            first_row = ws.row_values(1)
-            if first_row != headers:
-                if not first_row:
-                    ws.append_row(headers, value_input_option="USER_ENTERED")
-                else:
-                    logger.warning(
-                        "La hoja '%s' tiene encabezados distintos a los "
-                        "esperados. No se modifican automáticamente.",
-                        sheet_name,
-                    )
+            existing[sheet_name] = ws
+
+        present = [name for name in SCHEMAS if name not in missing]
+        if present:
+            ranges = [f"'{name}'!1:1" for name in present]
+            result = spreadsheet.values_batch_get(ranges)
+            for value_range in result.get("valueRanges", []):
+                sheet_name = value_range["range"].split("!")[0].strip("'")
+                headers = SCHEMAS[sheet_name]
+                values = value_range.get("values")
+                first_row = values[0] if values else []
+                if first_row != headers:
+                    if not first_row:
+                        existing[sheet_name].append_row(
+                            headers, value_input_option="USER_ENTERED"
+                        )
+                    else:
+                        logger.warning(
+                            "La hoja '%s' tiene encabezados distintos a los "
+                            "esperados. No se modifican automáticamente.",
+                            sheet_name,
+                        )
+    except gspread.exceptions.APIError as exc:
+        raise SheetsConnectionError(
+            "Error al comunicarse con la API de Google Sheets (posible "
+            "límite de tasa temporal). Intenta recargar la app en unos "
+            "segundos."
+        ) from exc
 
 
 def get_worksheet(sheet_name: str) -> gspread.Worksheet:
